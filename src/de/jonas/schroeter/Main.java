@@ -55,8 +55,6 @@ public class Main extends Application {
             for(int j = 0; j < 9; j++){
                 GameObject object = GameObject.addGameObject(startX + 100 * (i), startY + 100 * (j), "de/jonas/schroeter/img/red.png");
                 object.setColorRandomly();
-                if(i == 0 && j == 0)System.out.println(Arrays.toString(object.getCoords()));
-                if(i == 1 && j == 5)System.out.println(Arrays.toString(object.getCoords()));
             }
         }
     }
