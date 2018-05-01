@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -25,7 +26,15 @@ public class GameObject extends ImageView {
         this.setLayoutY(y);
         Main.root.getChildren().add(this);
         this.setOnMouseClicked(event -> {
-            this.remove();
+            if(event.getButton().equals(MouseButton.PRIMARY)){
+                this.remove();
+            }
+            else {
+                System.out.println(Arrays.toString(getCoords()));
+                System.out.println(this.getId());
+                System.out.println(this.color);
+                System.out.println();
+            }
         });
         this.setId("object" + this.getCoords()[0] + "_" + this.getCoords()[1]);
     }
@@ -68,29 +77,28 @@ public class GameObject extends ImageView {
     }
     public void update(){
         int[] coords = this.getCoords();
-        System.out.println(Arrays.toString(coords));
         if(Main.scene.lookup(("#object" + coords[0] + "_" + (coords[1] + 1))) == null && coords[1] + 1 < 9){
             this.setLayoutY(this.getLayoutY() + 100);
             this.setId("object" + this.getCoords()[0] + "_" + this.getCoords()[1]);
+            if(coords[1] > 0){
+                coords[1] = coords[1] - 1;
+                getByCoords(coords).update();
+            }
+            checkForRow();
         }
-        if(coords[1] > 0){
-            coords[1] = coords[1] - 1;
-            getByCoords(coords).update();
-        }
-        checkForRow();
     }
     public static GameObject getByCoords(int[] coords){
         return (GameObject)Main.scene.lookup("#object" + coords[0] + "_" + coords[1]);
     }
     public void checkForRow(){
         int[] coords = this.getCoords();
-        System.out.println(Arrays.toString(coords));
         int xCoord = coords[0];
         ArrayList<GameObject> objects = new ArrayList<>();
         while(getByCoords(new int[]{xCoord, coords[1]}).color.equals(color)){
             objects.add(getByCoords(new int[]{xCoord, coords[1]}));
             xCoord++;
         }
+        System.out.println("Size: " + objects.size());
         if(objects.size() > 2){
             for(GameObject o : objects)o.remove();
             System.out.println("Removed " + objects.size() + " objects! Color: " + objects.get(0).color);
